@@ -1311,12 +1311,26 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
         $newProduct = Mage::getModel('catalog/product')->setData($this->getData())
             ->setIsDuplicate(true)
             ->setOriginalId($this->getId())
-            ->setSku(null)
             ->setStatus(Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
             ->setCreatedAt(null)
             ->setUpdatedAt(null)
             ->setId(null)
             ->setStoreId(Mage::app()->getStore()->getId());
+        
+        /* @var $eavConfig Mage_Eav_Model_Config */
+        $eavConfig = Mage::getSingleton('eav/config');
+
+        $productEntityType = $eavConfig->getEntityType('catalog_product');
+        $productEntityTypeId = (int)$productEntityType->getId();
+
+        /* @var $uniqueAttributes Mage_Catalog_Model_Resource_Product_Attribute_Collection */
+        $uniqueAttributes = Mage::getResourceModel('catalog/product_attribute_collection');
+        $uniqueAttributes->addFieldToFilter('entity_type_id', ['eq' => $productEntityTypeId]);
+        $uniqueAttributes->addFieldToFilter('is_unique', '1');
+
+        foreach ($uniqueAttributes as $uniqueAttribute) {
+            $newProduct->setData($uniqueAttribute->getAttributeCode(), null);
+        }
 
         Mage::dispatchEvent(
             'catalog_model_product_duplicate',
