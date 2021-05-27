@@ -193,8 +193,10 @@ class Mage_Catalog_Model_Product_Attribute_Media_Api extends Mage_Catalog_Model_
 
             $product->save();
         } catch (Mage_Core_Exception $e) {
+            Mage::logException($e);
             $this->_fault('not_created', $e->getMessage());
         } catch (Exception $e) {
+            Mage::logException($e);
             $this->_fault('not_created', Mage::helper('catalog')->__('Cannot create image.'));
         }
 
