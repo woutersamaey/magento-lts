@@ -54,7 +54,9 @@ class Mage_Eav_Model_Entity_Attribute_Source_Boolean extends Mage_Eav_Model_Enti
             );
         }
         if ($withEmpty) {
+            $r = $this->_options;
             array_unshift($r, ['value' => '', 'label' => '']);
+            return $r;
         }
         return $this->_options;
     }
