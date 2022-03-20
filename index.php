@@ -85,4 +85,4 @@ if (file_exists($maintenanceFile)) {
     }
 }
 
-Mage::run($mageRunCode, $mageRunType);
+Mage::run($mageRunCode, $mageRunType, $_SERVER['MAGE_OPTIONS'] ?? []);
