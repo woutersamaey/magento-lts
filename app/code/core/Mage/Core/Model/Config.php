@@ -280,16 +280,18 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
      */
     public function loadBase()
     {
-        $etcDir = $this->getOptions()->getEtcDir();
-        $files = glob($etcDir.DS.'*.xml');
-        $this->loadFile(current($files));
-        while ($file = next($files)) {
-            $merge = clone $this->_prototype;
-            $merge->loadFile($file);
-            $this->extend($merge);
-        }
-        if (in_array($etcDir.DS.'local.xml', $files)) {
-            $this->_isLocalConfigLoaded = true;
+        $etcDirs = $this->getOptions()->getEtcDirs();
+        foreach($etcDirs as $etcDir) {
+            $files = glob($etcDir . DS . '*.xml');
+            $this->loadFile(current($files));
+            while ($file = next($files)) {
+                $merge = clone $this->_prototype;
+                $merge->loadFile($file);
+                $this->extend($merge);
+            }
+            if (in_array($etcDir . DS . 'local.xml', $files)) {
+                $this->_isLocalConfigLoaded = true;
+            }
         }
         return $this;
     }

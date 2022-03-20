@@ -58,7 +58,7 @@ class Mage_Core_Model_Config_Options extends Varien_Object
         $this->_data['base_dir']    = $root;
         $this->_data['code_dir']    = $appRoot.DS.'code';
         $this->_data['design_dir']  = $appRoot.DS.'design';
-        $this->_data['etc_dir']     = $appRoot.DS.'etc';
+        $this->_data['etc_dirs']    = $this->_data['etc_dirs'] ?? [$appRoot.DS.'etc'];
         $this->_data['lib_dir']     = $root.DS.'lib';
         $this->_data['locale_dir']  = $appRoot.DS.'locale';
         $this->_data['media_dir']   = $root.DS.'media';
@@ -123,13 +123,9 @@ class Mage_Core_Model_Config_Options extends Varien_Object
         return $this->_data['design_dir'];
     }
 
-    /**
-     * @return string
-     */
-    public function getEtcDir()
+    public function getEtcDirs(): array
     {
-        //return $this->getDataSetDefault('etc_dir', $this->getAppDir().DS.'etc');
-        return $this->_data['etc_dir'];
+        return $this->_data['etc_dirs'];
     }
 
     /**
