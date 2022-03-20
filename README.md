@@ -1,4 +1,4 @@
-# NextMagento - A fork of OpenMage that aims to be what Magento 2 should have been
+# NextMage - A fork of OpenMage that aims to be what Magento 2 should have been
 This project is a fork of OpenMage and follows what is done there, except that our aim is NOT to be a drop-in replacement for Magento 1, but a forward thinking new eCommerce platform taking the best of Magento 1 CE + the best of Magento 2 and what we have learned over +12 years of eCommerce development.
 
 ## Who is this project for?
