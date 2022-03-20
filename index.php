@@ -37,7 +37,7 @@ Whoops, it looks like you have an invalid PHP version.</h3></div><p>Magento supp
 /**
  * Compilation includes configuration file
  */
-define('MAGENTO_ROOT', getcwd());
+define('MAGENTO_ROOT', __DIR__);
 
 $mageFilename = MAGENTO_ROOT . '/app/Mage.php';
 $maintenanceFile = 'maintenance.flag';
