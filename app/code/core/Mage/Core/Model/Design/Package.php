@@ -174,12 +174,7 @@ class Mage_Core_Model_Design_Package
     {
         if (empty($name)) {
             // see, if exceptions for user-agents defined in config
-            $customPackage = $this->_checkUserAgentAgainstRegexps('design/package/ua_regexp');
-            if ($customPackage) {
-                $this->_name = $customPackage;
-            } else {
-                $this->_name = Mage::getStoreConfig('design/package/name', $this->getStore());
-            }
+            $this->_name = Mage::getStoreConfig('design/package/name', $this->getStore());
         } else {
             $this->_name = $name;
         }
@@ -286,13 +281,6 @@ class Mage_Core_Model_Design_Package
         }
 
         // + "default", "skin"
-
-        // set exception value for theme, if defined in config
-        $customThemeType = $this->_checkUserAgentAgainstRegexps("design/theme/{$type}_ua_regexp");
-        if ($customThemeType) {
-            $this->_theme[$type] = $customThemeType;
-        }
-
         return $this->_theme[$type];
     }
 
@@ -622,71 +610,6 @@ class Mage_Core_Model_Design_Package
         }
 
         return $result;
-    }
-
-    /**
-     * Get regex rules from config and check user-agent against them
-     *
-     * Rules must be stored in config as a serialized array(['regexp']=>'...', ['value'] => '...')
-     * Will return false or found string.
-     *
-     * @param string $regexpsConfigPath
-     * @return mixed
-     */
-    protected function _checkUserAgentAgainstRegexps($regexpsConfigPath)
-    {
-        if (empty($_SERVER['HTTP_USER_AGENT'])) {
-            return false;
-        }
-
-        if (!empty(self::$_customThemeTypeCache[$regexpsConfigPath])) {
-            return self::$_customThemeTypeCache[$regexpsConfigPath];
-        }
-
-        $configValueSerialized = Mage::getStoreConfig($regexpsConfigPath, $this->getStore());
-
-        if (!$configValueSerialized) {
-            return false;
-        }
-
-        try {
-            $regexps = Mage::helper('core/unserializeArray')->unserialize($configValueSerialized);
-        } catch (Exception $e) {
-            Mage::logException($e);
-        }
-
-        if (empty($regexps)) {
-            return false;
-        }
-
-        return self::getPackageByUserAgent($regexps, $regexpsConfigPath);
-    }
-
-    /**
-     * Return package name based on design exception rules
-     *
-     * @param array $rules - design exception rules
-     * @param string $regexpsConfigPath
-     * @return bool|string
-     */
-    public static function getPackageByUserAgent(array $rules, $regexpsConfigPath = 'path_mock')
-    {
-        foreach ($rules as $rule) {
-            if (!empty(self::$_regexMatchCache[$rule['regexp']][$_SERVER['HTTP_USER_AGENT']])) {
-                self::$_customThemeTypeCache[$regexpsConfigPath] = $rule['value'];
-                return $rule['value'];
-            }
-
-            $regexp = '/' . trim($rule['regexp'], '/') . '/';
-
-            if (@preg_match($regexp, $_SERVER['HTTP_USER_AGENT'])) {
-                self::$_regexMatchCache[$rule['regexp']][$_SERVER['HTTP_USER_AGENT']] = true;
-                self::$_customThemeTypeCache[$regexpsConfigPath] = $rule['value'];
-                return $rule['value'];
-            }
-        }
-
-        return false;
     }
 
     /**
